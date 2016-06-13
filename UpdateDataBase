@@ -1,0 +1,60 @@
+<?
+/*
+Author: Matt Jackson
+
+This PHP script takes values submitted in a form that have already
+been validated client side. It then forms MySQL queries and inserts
+the data into the Results table.
+ 
+ It uses and external PHP script which provides functions that ease
+ connection to the database.
+
+Created on 18/01/2015
+*/
+
+$dbhost = 'localhost';
+$dbuser = 'mj5943';
+$dbpass = 'FWfbn5Wf';
+$db = 'mj5943_db';
+
+include 'phpFunctions.php';
+$conn = connectDB($dbhost,$dbuser,$dbpass,$db );   
+   if(! $conn ) {
+      die('Could not connect: ' . mysql_error());
+   }
+   
+   //taking values from POST and assigning them to variables.
+   $RunnerID = $_POST['RunnerID'];
+   $EventID = $_POST['EventID'];
+   $Date = $_POST['Date'];
+   $CategoryID = $_POST['CategoryID'];
+   $PB = $_POST['PB'];
+   $AgeGrade = $_POST['AgeGrade'];
+   $Position = $_POST['Position'];
+   $FinishTime = $_POST['FinishTime'];
+   
+   // forming the MySQL query
+   $sql = "INSERT INTO Results (RunnerID, EventID, Date, FinishTime, Position, CategoryID, AgeGrade ,PB)
+      VALUES('$RunnerID', '$EventID', '$Date', '$FinishTime', '$Position', '$CategoryID', '$AgeGrade', '$PB')";
+      
+   mysql_select_db('mj5943_db');
+   $retval = mysql_query( $sql, $conn );
+   
+   if(! $retval ) {
+      die('Could not enter data: ' . mysql_error());
+   }
+   
+   //If successful show the client what has been uploaded.
+   echo "<h1>Success! Saving data:</h1>";
+   echo "<br>RunnerID = ". $RunnerID;
+   echo "<br>EventID = ". $EventID;
+   echo "<br>Date = ". $Date;
+   echo "<br>FinishTime = ". $FinishTime;
+   echo "<br>Position = ". $Position;
+   echo "<br>CategoryID = ". $CategoryID;
+   echo "<br>AgeGrade = ". $AgeGrade;
+   echo "<br>PB = ". $PB;
+   
+   mysql_close($conn);
+
+?>
