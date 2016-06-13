@@ -1,0 +1,60 @@
+<?
+/*
+Author: Matt Jackson
+
+This is a PHP script which will take input from a form and on the basis of 
+that query a database and then display the data in a HTML table. The form
+will offer the user a choice of fields to sort the data by as well as whether
+they want the data to be sorted in ascending or descending order.
+
+Include an external PHP script which contains functions used to connect to 
+the database.
+
+Written on the 19/01/2016			
+*/
+$dbhost = 'localhost';
+$dbuser = 'mj5943';
+$dbpass = 'FWfbn5Wf';
+$db = 'mj5943_db';
+
+include 'phpFunctions.php';
+$conn = connectDB($dbhost,$dbuser,$dbpass,$db );
+
+$SortBy = $_POST['SortBy'];
+$SortIn = $_POST['SortIn'];
+$IncludeAgeGrade = $_POST['IncludeAgeGrade'];
+
+
+$mySqlQuery = 'select * from Results order by '. $SortBy.' '. $SortIn;
+$result = mysql_query($mySqlQuery, $conn);
+if(! $conn) {
+    die('Query did not return expected result.');
+}
+echo "<table>";
+echo " <tr> 
+            <th> RunnerID </th> 
+            <th> EventID </th> 
+            <th> Date </th>
+            <th> Finish Time </th>
+            <th> Position </th>
+            <th> CategoryID </th>";
+if ($IncludeAgeGrade == "1")
+	echo "<th> Age Grade </th>";           
+echo        "<th> PB </th>
+			</tr> ";
+while ( $row = mysql_fetch_array($result) )
+{
+    echo "<tr><td>" . $row['RunnerID'] . "</td>";
+    echo "<td>" . $row['EventID'] . "</td>";
+	echo "<td>" . $row['Date'] . "</td>";
+    echo "<td>" . $row['FinishTime'] . "</td>";
+    echo "<td>" . $row['Position'] . "</td>";
+    echo "<td>" . $row['CategoryID'] . "</td>";
+    if ($IncludeAgeGrade == "1")
+		echo "<td>" . $row['AgeGrade'] . "</td>";
+    echo "<td>" . $row['PB'] . "</td></tr>";
+}
+echo "</table>";
+
+
+?>
